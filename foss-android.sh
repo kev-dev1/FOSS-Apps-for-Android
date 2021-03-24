@@ -19,26 +19,26 @@ echo ""
 echo "Yes to install or No for not."
 read ant
 echo ""
-if [ "$ant" == 'Yes' ];
+if [ "$ant" == 'Yes'];
   then
   echo "Downloading F-Droid..."
-  wget -P "$destDir" -nc https://f-droid.org/F-Droid.apk
+  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/F-Droid.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OSMAnd..."
-  wget -P "$destDir" -nc https://f-droid.org/repo/net.osmand.plus_398.apk
+  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/net.osmand.plus_400.apk
   echo "Download complete!"
   echo ""
   echo "Downloading Davx5..."
-  wget -P "$destDir" -nc https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
+  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OpenTasks..."
-  wget -P "$destDir" -nc https://f-droid.org/repo/org.dmfs.tasks_80800.apk
+  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_80800.apk
   echo "Download complete!"
   echo ""
   echo "Downloading NewPipe..."
-  wget -P "$destDir" -nc https://f-droid.org/repo/org.schabi.newpipe_965.apk
+  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_965.apk
   echo "Download complete!"
   echo ""
   while true;
@@ -56,7 +56,7 @@ if [ "$ant" == 'Yes' ];
       echo "Install complete!"
       echo ""
       echo "Install OSMAnd..."
-      adb install ./Apps/net.osmand.plus_398.apk
+      adb install ./Apps/net.osmand.plus_400.apk
       echo "Install complete!"
       echo ""
       echo "Install Davx5..."
@@ -73,12 +73,15 @@ if [ "$ant" == 'Yes' ];
       echo ""
       echo "Have a Nice day with you FOSS Device!!"
       echo ""
-    elif [[ "$adb" == 'No' ]]; then
+    elif [[ "$adb" == 'No']]; then
       echo "Check thats you Device had ADB activated!"
       exit 1
     fi
   done
-elif [ "$ant" == 'No' ]; then
+elif [ "$ant" == 'No']; then
   echo "Oh, Sorry for you. The FOSS Apps are good."
   exit 1
+
+else
+  echo "Sorry! Please type Yes or No"
 fi
