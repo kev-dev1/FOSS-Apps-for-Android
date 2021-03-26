@@ -4,6 +4,17 @@
 destDir="Apps"
 
 echo ""
+echo "###############################################################"
+echo "                 Kev-Dev1 script Project"
+echo ""
+echo " You can help me with my Project"
+echo " When you have a Idea or you find a Bug, please create a"
+echo " Issues on Github to this Project."
+echo ""
+echo " Github: https://github.com/kev-dev1"
+echo ""
+echo "################################################################"
+echo ""
 echo "This is a little script for my Favorites FOSS Apps for Android."
 echo "This is a alternativ for GApps too."
 echo ""
@@ -16,29 +27,29 @@ echo "Davx5"
 echo "OpenTasks"
 echo "NewPipe"
 echo ""
-echo "Yes to install or No for not."
+echo "[Y] to install, [N] for not or [E] for exit."
 read ant
 echo ""
-if [ "$ant" == 'Yes'];
+if [ "$ant" == 'Y'];
   then
   echo "Downloading F-Droid..."
-  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/F-Droid.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/F-Droid.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OSMAnd..."
-  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/net.osmand.plus_400.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/net.osmand.plus_400.apk
   echo "Download complete!"
   echo ""
   echo "Downloading Davx5..."
-  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OpenTasks..."
-  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_80800.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_80800.apk
   echo "Download complete!"
   echo ""
   echo "Downloading NewPipe..."
-  aria2c -d "$destDir" --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_965.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_965.apk
   echo "Download complete!"
   echo ""
   while true;
@@ -49,7 +60,7 @@ if [ "$ant" == 'Yes'];
     echo "Authorized this on you Device!"
     echo ""
     read adb
-    if [[ "$adb" == 'Yes' ]]; then
+    if [[ "$adb" == 'Y' ]]; then
       echo ""
       echo "Install F-Droid..."
       adb install ./Apps/F-Droid.apk
@@ -73,15 +84,14 @@ if [ "$ant" == 'Yes'];
       echo ""
       echo "Have a Nice day with you FOSS Device!!"
       echo ""
-    elif [[ "$adb" == 'No']]; then
+    elif [[ "$adb" == 'N']]; then
       echo "Check thats you Device had ADB activated!"
       exit 1
     fi
   done
-elif [ "$ant" == 'No']; then
+elif [ "$ant" == 'N']; then
   echo "Oh, Sorry for you. The FOSS Apps are good."
   exit 1
-
-else
-  echo "Sorry! Please type Yes or No"
+elif [[ "$ant" == 'E' ]]; then
+  exit
 fi
