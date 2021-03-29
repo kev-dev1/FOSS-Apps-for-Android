@@ -82,7 +82,7 @@ if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
 echo Downloading OpenTasks...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.dmfs.tasks_80800.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.dmfs.tasks_82200.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -128,7 +128,7 @@ echo "Install Davx5..."
 echo "Install complete!"
 echo.
 echo "Install OpenTasks..."
-%adb% install %destDir%\org.dmfs.tasks_80800.apk
+%adb% install %destDir%\org.dmfs.tasks_82200.apk
 echo "Install complete!"
 echo.
 echo "Install NewPipe..."

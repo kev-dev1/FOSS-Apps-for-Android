@@ -45,7 +45,7 @@ if [ "$ant" == 'Y'];
   echo "Download complete!"
   echo ""
   echo "Downloading OpenTasks..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_80800.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_82200.apk
   echo "Download complete!"
   echo ""
   echo "Downloading NewPipe..."
@@ -75,7 +75,7 @@ if [ "$ant" == 'Y'];
       echo "Install complete!"
       echo ""
       echo "Install OpenTasks..."
-      adb install ./Apps/org.dmfs.tasks_80800.apk
+      adb install ./Apps/org.dmfs.tasks_82200.apk
       echo "Install complete!"
       echo ""
       echo "Install NewPipe..."
