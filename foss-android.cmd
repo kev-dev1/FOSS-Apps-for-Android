@@ -175,9 +175,11 @@ pause
 exit
 
 :check_ERROR
+cls
 echo.
 echo Please check thats your Android Devices had ADB-Debugging active.
 echo.
+pause
 goto check
 
 :DOWNLOAD_ERROR
