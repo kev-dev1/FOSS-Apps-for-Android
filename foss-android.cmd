@@ -68,33 +68,40 @@ if NOT EXIST %adb% goto :NO_ADB
 echo.
 echo Download starts...
 echo.
+cls
 echo Downloading F-Droid...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/F-Droid.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo "Download complete!"
 echo.
+cls
 echo Downloading OSMAnd...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/net.osmand.plus_400.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
+cls
 echo Downloading Davx5...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
+cls
 echo Downloading OpenTasks...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.dmfs.tasks_82200.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
+cls
 echo Downloading NewPipe...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_965.apk
 echo.
+cls
 echo Downloading FlorisBoard...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_28.apk
 echo.
-echo Downloading Telegram...
+cls
+echo Downloading Telegram Messenger...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.telegram.messenger_22465.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
@@ -153,7 +160,7 @@ echo "Install FlorisBoard..."
 %adb% install %destDir%\dev.patrickgold.florisboard_28.apk
 echo "Install complete!"
 cls
-echo "Install Telegram..."
+echo "Install Telegram Messenger..."
 %adb% install %destDir%\org.telegram.messenger_22465.apk
 echo "Install complete!"
 goto finish
