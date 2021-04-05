@@ -9,6 +9,8 @@ This Script contain following FOSS Apps:
 - Davx5
 - OpenTasks
 - NewPipe
+- FlorisBoard
+- Telegram Messenger
 
 When get use the Script is to install this on Linux:
 - aria2c
