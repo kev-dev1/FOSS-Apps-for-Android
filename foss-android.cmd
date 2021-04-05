@@ -35,6 +35,8 @@ echo "OSMAnd"
 echo "Davx5"
 echo "OpenTasks"
 echo "NewPipe"
+echo "FlorisBoard"
+echo "Telegram Messenger"
 echo.
 echo Type [Y] to install, [N] for not or [E] for exit
 echo Or type Exit to close this script!
@@ -88,6 +90,12 @@ echo Download complete!
 echo.
 echo Downloading NewPipe...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_965.apk
+echo.
+echo Downloading FlorisBoard...
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_28.apk
+echo.
+echo Downloading Telegram...
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.telegram.messenger_22465.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -104,10 +112,10 @@ echo.
 echo Is you Android Device in the list?
 echo [Y]es or [N]o
 set /p adb =
-if %adb% == Y goto download
-if %adb% == y goto download
-if %adb% == N goto exit
-if %adb% == n goto exit
+if %adb% == Y goto install
+if %adb% == y goto install
+if %adb% == N goto check_ERROR
+if %adb% == n goto check_ERROR
 
 
 :install
@@ -115,24 +123,38 @@ cls
 echo.
 echo Install starting...
 echo.
+cls
 echo "Install F-Droid..."
 %adb% install %destDir%\F-Droid.apk
 echo "Install complete!"
 echo.
+cls
 echo "Install OSMAnd..."
 %adb% install %destDir%\net.osmand.plus_400.apk
 echo "Install complete!"
 echo.
+cls
 echo "Install Davx5..."
 %adb% install %destDir%\at.bitfire.davdroid_303090004.apk
 echo "Install complete!"
 echo.
+cls
 echo "Install OpenTasks..."
 %adb% install %destDir%\org.dmfs.tasks_82200.apk
 echo "Install complete!"
 echo.
+cls
 echo "Install NewPipe..."
 %adb% install %destDir%\org.schabi.newpipe_965.apk
+echo "Install complete!"
+echo.
+cls
+echo "Install FlorisBoard..."
+%adb% install %destDir%\dev.patrickgold.florisboard_28.apk
+echo "Install complete!"
+cls
+echo "Install Telegram..."
+%adb% install %destDir%\org.telegram.messenger_22465.apk
 echo "Install complete!"
 goto finish
 
@@ -153,9 +175,11 @@ pause
 exit
 
 :check_ERROR
+cls
 echo.
 echo Please check thats your Android Devices had ADB-Debugging active.
 echo.
+pause
 goto check
 
 :DOWNLOAD_ERROR
