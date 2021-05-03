@@ -32,8 +32,7 @@ echo ""
 echo "[Y] to install, [N] for not or [E] for exit."
 read ant
 echo ""
-if [ "$ant" == 'Y'];
-  then
+if [ "$ant" == 'Y']; then
   echo "Downloading F-Droid..."
   aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/F-Droid.apk
   echo "Download complete!"
@@ -112,4 +111,6 @@ elif [ "$ant" == 'N']; then
   exit 1
 elif [[ "$ant" == 'E' ]]; then
   exit
+else
+  echo "Please Type again"
 fi
