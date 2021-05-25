@@ -42,7 +42,7 @@ if [ "$ant" == 'Y']; then
   echo "Download complete!"
   echo ""
   echo "Downloading Davx5..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303100003.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OpenTasks..."
@@ -50,15 +50,15 @@ if [ "$ant" == 'Y']; then
   echo "Download complete!"
   echo ""
   echo "Downloading NewPipe..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_965.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_968.apk
   echo "Download complete!"
   echo ""
   echo "Downloading FlorisBoard..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/dev.patrickgold.florisboard_28.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
   echo "Download complete!"
   echo ""
   echo "Downloading Telegram..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.telegram.messenger_22465.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.telegram.messenger_22935.apk
   echo "Download complete!"
   echo ""
   while true;
@@ -80,7 +80,7 @@ if [ "$ant" == 'Y']; then
       echo "Install complete!"
       echo ""
       echo "Install Davx5..."
-      adb install ./Apps/at.bitfire.davdroid_303090004.apk
+      adb install ./Apps/at.bitfire.davdroid_303100003.apk
       echo "Install complete!"
       echo ""
       echo "Install OpenTasks..."
@@ -88,15 +88,15 @@ if [ "$ant" == 'Y']; then
       echo "Install complete!"
       echo ""
       echo "Install NewPipe..."
-      adb install ./Apps/org.schabi.newpipe_965.apk
+      adb install ./Apps/org.schabi.newpipe_968.apk
       echo "Install complete!"
       echo ""
       echo "Install FlorisBoard..."
-      adb install ./Apps/dev.patrickgold.florisboard_28.apk
+      adb install ./Apps/dev.patrickgold.florisboard_43.apk
       echo "Install complete!"
       echo ""
       echo "Install FlorisBoard..."
-      adb install ./Apps/org.telegram.messenger_22465.apk
+      adb install ./Apps/org.telegram.messenger_22935.apk
       echo "Install complete!"
       echo ""
       echo "Have a Nice day with you FOSS Device!!"

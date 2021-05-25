@@ -82,7 +82,7 @@ echo Download complete!
 echo.
 cls
 echo Downloading Davx5...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303090004.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303100003.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -94,15 +94,15 @@ echo Download complete!
 echo.
 cls
 echo Downloading NewPipe...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_965.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_968.apk
 echo.
 cls
 echo Downloading FlorisBoard...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_28.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
 echo.
 cls
 echo Downloading Telegram Messenger...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.telegram.messenger_22465.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.telegram.messenger_22935.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -142,7 +142,7 @@ echo "Install complete!"
 echo.
 cls
 echo "Install Davx5..."
-%adb% install %destDir%\at.bitfire.davdroid_303090004.apk
+%adb% install %destDir%\at.bitfire.davdroid_303100003.apk
 echo "Install complete!"
 echo.
 cls
@@ -152,16 +152,16 @@ echo "Install complete!"
 echo.
 cls
 echo "Install NewPipe..."
-%adb% install %destDir%\org.schabi.newpipe_965.apk
+%adb% install %destDir%\org.schabi.newpipe_968.apk
 echo "Install complete!"
 echo.
 cls
 echo "Install FlorisBoard..."
-%adb% install %destDir%\dev.patrickgold.florisboard_28.apk
+%adb% install %destDir%\dev.patrickgold.florisboard_43.apk
 echo "Install complete!"
 cls
 echo "Install Telegram Messenger..."
-%adb% install %destDir%\org.telegram.messenger_22465.apk
+%adb% install %destDir%\org.telegram.messenger_22935.apk
 echo "Install complete!"
 goto finish
 
