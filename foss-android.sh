@@ -27,7 +27,6 @@ echo "Davx5"
 echo "OpenTasks"
 echo "NewPipe"
 echo "FlorisBoard"
-echo "Telegram Messenger"
 echo ""
 echo "[Y] to install, [N] for not or [E] for exit."
 read ant
@@ -55,10 +54,6 @@ if [ "$ant" == 'Y']; then
   echo ""
   echo "Downloading FlorisBoard..."
   aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading Telegram..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.telegram.messenger_22935.apk
   echo "Download complete!"
   echo ""
   while true;
@@ -93,10 +88,6 @@ if [ "$ant" == 'Y']; then
       echo ""
       echo "Install FlorisBoard..."
       adb install ./Apps/dev.patrickgold.florisboard_43.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install FlorisBoard..."
-      adb install ./Apps/org.telegram.messenger_22935.apk
       echo "Install complete!"
       echo ""
       echo "Have a Nice day with you FOSS Device!!"
