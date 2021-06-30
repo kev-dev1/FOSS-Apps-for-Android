@@ -36,7 +36,6 @@ echo "Davx5"
 echo "OpenTasks"
 echo "NewPipe"
 echo "FlorisBoard"
-echo "Telegram Messenger"
 echo.
 echo Type [Y] to install, [N] for not or [E] for exit
 echo Or type Exit to close this script!
@@ -95,14 +94,11 @@ echo.
 cls
 echo Downloading NewPipe...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_968.apk
+if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo.
 cls
 echo Downloading FlorisBoard...
 %aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
-echo.
-cls
-echo Downloading Telegram Messenger...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.telegram.messenger_22935.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -158,10 +154,6 @@ echo.
 cls
 echo "Install FlorisBoard..."
 %adb% install %destDir%\dev.patrickgold.florisboard_43.apk
-echo "Install complete!"
-cls
-echo "Install Telegram Messenger..."
-%adb% install %destDir%\org.telegram.messenger_22935.apk
 echo "Install complete!"
 goto finish
 
