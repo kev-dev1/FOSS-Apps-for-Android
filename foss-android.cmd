@@ -81,7 +81,7 @@ echo Download complete!
 echo.
 cls
 echo Downloading Davx5...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303100003.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303110004.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo Download complete!
 echo.
@@ -93,7 +93,7 @@ echo Download complete!
 echo.
 cls
 echo Downloading NewPipe...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_968.apk
+%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_971.apk
 if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
 echo.
 cls
@@ -138,7 +138,7 @@ echo "Install complete!"
 echo.
 cls
 echo "Install Davx5..."
-%adb% install %destDir%\at.bitfire.davdroid_303100003.apk
+%adb% install %destDir%\at.bitfire.davdroid_303110004.apk
 echo "Install complete!"
 echo.
 cls
@@ -148,7 +148,7 @@ echo "Install complete!"
 echo.
 cls
 echo "Install NewPipe..."
-%adb% install %destDir%\org.schabi.newpipe_968.apk
+%adb% install %destDir%\org.schabi.newpipe_971.apk
 echo "Install complete!"
 echo.
 cls

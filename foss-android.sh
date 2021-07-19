@@ -41,7 +41,7 @@ if [ "$ant" == 'Y']; then
   echo "Download complete!"
   echo ""
   echo "Downloading Davx5..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303100003.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303110004.apk
   echo "Download complete!"
   echo ""
   echo "Downloading OpenTasks..."
@@ -49,7 +49,7 @@ if [ "$ant" == 'Y']; then
   echo "Download complete!"
   echo ""
   echo "Downloading NewPipe..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_968.apk
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_971.apk
   echo "Download complete!"
   echo ""
   echo "Downloading FlorisBoard..."
@@ -75,7 +75,7 @@ if [ "$ant" == 'Y']; then
       echo "Install complete!"
       echo ""
       echo "Install Davx5..."
-      adb install ./Apps/at.bitfire.davdroid_303100003.apk
+      adb install ./Apps/at.bitfire.davdroid_303110004.apk
       echo "Install complete!"
       echo ""
       echo "Install OpenTasks..."
@@ -83,7 +83,7 @@ if [ "$ant" == 'Y']; then
       echo "Install complete!"
       echo ""
       echo "Install NewPipe..."
-      adb install ./Apps/org.schabi.newpipe_968.apk
+      adb install ./Apps/org.schabi.newpipe_971.apk
       echo "Install complete!"
       echo ""
       echo "Install FlorisBoard..."
