@@ -1,12 +1,12 @@
 # FOSS Apps for Android
 
-This is a little Script that's I create for install FOSS Apps for all Android Devices.
+This project provides scripts to download and install a curated list of FOSS Android apps.
 
-# For what i create this Script?
-I love Android and Open Source Software, but we use proprietary Apps that´s tracing us and sell us data,
-that´s why I use and love personaly Open Source Software. It´s Open Source and a better Alternative to the other non-free Apps.
+## What changed
+The scripts now resolve the **latest available APK versions automatically** from F-Droid at runtime.
+You no longer need to manually update hardcoded version numbers in filenames.
 
-# It´s contain FOSS Apps:
+## Included apps
 - F-Droid
 - OSMAnd
 - Davx5
@@ -14,13 +14,17 @@ that´s why I use and love personaly Open Source Software. It´s Open Source and
 - NewPipe
 - FlorisBoard
 
-# Install this on Linux before use:
-- aria2c
-- android-sdk
+## Linux requirements
+- `aria2c`
+- `adb` (Android platform tools)
+- `curl`, `grep` (used to resolve latest APK links)
 
-# For Windows 
-It´s exist in the "files" Folder.
+## Windows requirements
+- Included in `files/`:
+  - `aria2c.exe`
+  - `adb.exe`
+- `PowerShell` (already available on modern Windows versions, used to resolve latest APK links)
 
-# In the future
-I will add more FOSS Applications in the List.
-You can contribute this Project too. Make a Request on Github and write what for FOSS Applications is better alternative to Google Apps and can in the List.
+## Notes
+- Linux script: `foss-android.sh`
+- Windows script: `foss-android.cmd` (can also be renamed to `.bat` if you prefer)
