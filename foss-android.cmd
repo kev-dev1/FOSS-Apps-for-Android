@@ -1,14 +1,23 @@
 @echo off
+setlocal EnableExtensions EnableDelayedExpansion
 title=FOSS Apps for Android
 
 cd /d "%~dp0"
 if NOT "%cd%"=="%cd: =%" (
   echo The Current directory contains spaces in the path.
-  echo Please move or rename the directory to on whos not contain spaces.
+  echo Please move or rename the directory to one without spaces.
   echo.
   pause
   goto :EOF
 )
+
+set "aria2c=files\aria2c.exe"
+set "adb=files\adb.exe"
+set "destDir=Apps"
+
+if NOT EXIST "%aria2c%" goto :NO_ARIA2
+if NOT EXIST "%adb%" goto :NO_ADB
+if NOT EXIST "%destDir%" mkdir "%destDir%"
 
 :main
 cls
@@ -40,13 +49,10 @@ echo.
 echo Type [Y] to install, [N] for not or [E] for exit
 echo Or type Exit to close this script!
 echo.
-set /p enter= "Choose: "
-if %enter% == Y goto download
-if %enter% == y goto download
-if %enter% == N goto exit
-if %enter% == n goto exit
-if %enter% == E goto EOF
-if %enter% == e goto EOF
+set /p enter="Choose: "
+if /i "%enter%"=="Y" goto download
+if /i "%enter%"=="N" goto exit
+if /i "%enter%"=="E" goto EOF
 echo.
 echo Please type correct!
 echo.
@@ -55,107 +61,95 @@ goto main
 
 :download
 cls
-
-:START_PROCESS
-set "aria2c=files\aria2c.exe"
-set "adb=files\adb.exe"
-set "destDir=Apps"
-
-if NOT EXIST %aria2c% goto :NO_ARIA2
-if NOT EXIST %adb% goto :NO_ADB
-
 echo.
 echo Download starts...
 echo.
-cls
-echo Downloading F-Droid...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/F-Droid.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo "Download complete!"
-echo.
-cls
-echo Downloading OSMAnd...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/net.osmand.plus_400.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo Download complete!
-echo.
-cls
-echo Downloading Davx5...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/at.bitfire.davdroid_303110004.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo Download complete!
-echo.
-cls
-echo Downloading OpenTasks...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.dmfs.tasks_82200.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo Download complete!
-echo.
-cls
-echo Downloading NewPipe...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/org.schabi.newpipe_971.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo.
-cls
-echo Downloading FlorisBoard...
-%aria2c% -d %destDir% --no-conf --allow-overwrite=true --file-allocation=none https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
-if %ERRORLEVEL% GTR 0 call :DOWNLOAD_ERROR & exit /b 1
-echo Download complete!
-echo.
-pause
+
+call :DOWNLOAD_FIXED "F-Droid" "https://f-droid.org/F-Droid.apk" "F-Droid.apk" || exit /b 1
+call :DOWNLOAD_LATEST_FDROID "OSMAnd" "net.osmand.plus" || exit /b 1
+call :DOWNLOAD_LATEST_FDROID "Davx5" "at.bitfire.davdroid" || exit /b 1
+call :DOWNLOAD_LATEST_FDROID "OpenTasks" "org.dmfs.tasks" || exit /b 1
+call :DOWNLOAD_LATEST_FDROID "NewPipe" "org.schabi.newpipe" || exit /b 1
+call :DOWNLOAD_LATEST_FDROID "FlorisBoard" "dev.patrickgold.florisboard" || exit /b 1
+
 goto check
+
+:DOWNLOAD_FIXED
+set "APP_NAME=%~1"
+set "APP_URL=%~2"
+set "APP_FILE=%~3"
+echo Downloading %APP_NAME%...
+"%aria2c%" -d "%destDir%" --no-conf --allow-overwrite=true --file-allocation=none "%APP_URL%"
+if errorlevel 1 call :DOWNLOAD_ERROR & exit /b 1
+set "APK_%APP_NAME%=%APP_FILE%"
+echo Download complete: %APP_FILE%
+echo.
+exit /b 0
+
+:DOWNLOAD_LATEST_FDROID
+set "APP_NAME=%~1"
+set "PACKAGE_ID=%~2"
+set "APP_URL="
+set "APP_FILE="
+
+for /f "usebackq delims=" %%U in (`powershell -NoProfile -Command "$html=(Invoke-WebRequest -UseBasicParsing -Uri 'https://f-droid.org/packages/%PACKAGE_ID%/').Content; $m=[regex]::Match($html,'https://f-droid.org/repo/[^\" ]+\.apk'); if($m.Success){$m.Value}"`) do set "APP_URL=%%U"
+
+if not defined APP_URL (
+  echo Failed to resolve latest APK for %APP_NAME% ^(%PACKAGE_ID%^).
+  exit /b 1
+)
+
+for %%F in ("%APP_URL%") do set "APP_FILE=%%~nxF"
+
+echo Downloading %APP_NAME%...
+"%aria2c%" -d "%destDir%" --no-conf --allow-overwrite=true --file-allocation=none "%APP_URL%"
+if errorlevel 1 call :DOWNLOAD_ERROR & exit /b 1
+
+set "APK_%APP_NAME%=%APP_FILE%"
+echo Download complete: %APP_FILE%
+echo.
+exit /b 0
 
 :check
 cls
 echo.
 echo Check on your Android Device is ADB-Debugging active.
 echo.
-%adb% device
+"%adb%" devices
 echo.
-echo Is you Android Device in the list?
+echo Is your Android Device in the list?
 echo [Y]es or [N]o
-set /p adb =
-if %adb% == Y goto install
-if %adb% == y goto install
-if %adb% == N goto check_ERROR
-if %adb% == n goto check_ERROR
-
+set /p adbAnswer=
+if /i "%adbAnswer%"=="Y" goto install
+if /i "%adbAnswer%"=="N" goto check_ERROR
+goto check
 
 :install
 cls
 echo.
 echo Install starting...
 echo.
-cls
-echo "Install F-Droid..."
-%adb% install %destDir%\F-Droid.apk
-echo "Install complete!"
-echo.
-cls
-echo "Install OSMAnd..."
-%adb% install %destDir%\net.osmand.plus_400.apk
-echo "Install complete!"
-echo.
-cls
-echo "Install Davx5..."
-%adb% install %destDir%\at.bitfire.davdroid_303110004.apk
-echo "Install complete!"
-echo.
-cls
-echo "Install OpenTasks..."
-%adb% install %destDir%\org.dmfs.tasks_82200.apk
-echo "Install complete!"
-echo.
-cls
-echo "Install NewPipe..."
-%adb% install %destDir%\org.schabi.newpipe_971.apk
-echo "Install complete!"
-echo.
-cls
-echo "Install FlorisBoard..."
-%adb% install %destDir%\dev.patrickgold.florisboard_43.apk
-echo "Install complete!"
+
+call :INSTALL_APP "F-Droid"
+call :INSTALL_APP "OSMAnd"
+call :INSTALL_APP "Davx5"
+call :INSTALL_APP "OpenTasks"
+call :INSTALL_APP "NewPipe"
+call :INSTALL_APP "FlorisBoard"
 goto finish
+
+:INSTALL_APP
+set "APP_NAME=%~1"
+set "APP_FILE=!APK_%APP_NAME%!"
+if not defined APP_FILE (
+  echo Missing downloaded file for %APP_NAME%.
+  exit /b 1
+)
+echo Install %APP_NAME%...
+"%adb%" install "%destDir%\!APP_FILE!"
+echo Install complete!
+echo.
+exit /b 0
 
 :exit
 cls
@@ -168,7 +162,7 @@ exit
 :finish
 cls
 echo.
-echo Have a Nice day with you Android FOSS Device!!
+echo Have a Nice day with your Android FOSS Device!!
 echo.
 pause
 exit
@@ -176,7 +170,7 @@ exit
 :check_ERROR
 cls
 echo.
-echo Please check thats your Android Devices had ADB-Debugging active.
+echo Please check that your Android Device has ADB-Debugging active.
 echo.
 pause
 goto check
@@ -184,10 +178,10 @@ goto check
 :DOWNLOAD_ERROR
 echo.
 echo Error on downloading the Files.
-echo Please check you Internet connecting or try this later.
+echo Please check your Internet connection or try again later.
 echo.
 pause
-goto EOF
+exit /b 1
 
 :NO_ARIA2
 cls
@@ -202,8 +196,8 @@ exit
 :NO_ADB
 cls
 echo.
-echo Please check in the Files folder the file adb.exe exists.
-echo When not than download the Script again.
+echo Please check in the files folder that adb.exe exists.
+echo If not, download the script again.
 echo.
 pause
 exit

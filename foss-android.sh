@@ -1,7 +1,45 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # The Applications downloading in the Apps Folder.
 destDir="Apps"
+mkdir -p "$destDir"
+
+declare -A APK_FILES
+
+# package id => display name
+declare -A APPS=(
+  [net.osmand.plus]="OSMAnd"
+  [at.bitfire.davdroid]="Davx5"
+  [org.dmfs.tasks]="OpenTasks"
+  [org.schabi.newpipe]="NewPipe"
+  [dev.patrickgold.florisboard]="FlorisBoard"
+)
+
+get_latest_fdroid_apk_url() {
+  local package_id="$1"
+  local page_url="https://f-droid.org/packages/${package_id}/"
+
+  curl -fsSL "$page_url" \
+    | grep -oE 'https://f-droid.org/repo/[^" ]+\.apk' \
+    | head -n 1
+}
+
+download_and_store() {
+  local display_name="$1"
+  local url="$2"
+
+  echo "Downloading ${display_name}..."
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true --file-allocation=none "$url"
+
+  local downloaded_file
+  downloaded_file="$(basename "${url%%\?*}")"
+  APK_FILES["$display_name"]="$downloaded_file"
+
+  echo "Download complete: $downloaded_file"
+  echo ""
+}
 
 echo ""
 echo "###############################################################"
@@ -29,79 +67,54 @@ echo "NewPipe"
 echo "FlorisBoard"
 echo ""
 echo "[Y] to install, [N] for not or [E] for exit."
-read ant
+read -r ant
 echo ""
-if [ "$ant" == 'Y']; then
-  echo "Downloading F-Droid..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/F-Droid.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading OSMAnd..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/net.osmand.plus_400.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading Davx5..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303110004.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading OpenTasks..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_82200.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading NewPipe..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_971.apk
-  echo "Download complete!"
-  echo ""
-  echo "Downloading FlorisBoard..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
-  echo "Download complete!"
-  echo ""
-  while true;
-  do
-    echo "See you Android Device in the List"
+
+if [[ "$ant" == 'Y' || "$ant" == 'y' ]]; then
+  download_and_store "F-Droid" "https://f-droid.org/F-Droid.apk"
+
+  for package_id in "${!APPS[@]}"; do
+    app_name="${APPS[$package_id]}"
+    apk_url="$(get_latest_fdroid_apk_url "$package_id")"
+
+    if [[ -z "$apk_url" ]]; then
+      echo "Could not find latest APK URL for $app_name ($package_id)."
+      exit 1
+    fi
+
+    download_and_store "$app_name" "$apk_url"
+  done
+
+  while true; do
+    echo "See your Android Device in the List"
     adb devices
     echo "When Yes but they see unauthorized."
-    echo "Authorized this on you Device!"
+    echo "Authorize this on your Device!"
     echo ""
-    read adb
-    if [[ "$adb" == 'Y' ]]; then
+    read -r adb_answer
+
+    if [[ "$adb_answer" == 'Y' || "$adb_answer" == 'y' ]]; then
+      for app in "F-Droid" "OSMAnd" "Davx5" "OpenTasks" "NewPipe" "FlorisBoard"; do
+        echo "Install $app..."
+        adb install "./$destDir/${APK_FILES[$app]}"
+        echo "Install complete!"
+        echo ""
+      done
+
+      echo "Have a Nice day with your FOSS Device!!"
       echo ""
-      echo "Install F-Droid..."
-      adb install ./Apps/F-Droid.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install OSMAnd..."
-      adb install ./Apps/net.osmand.plus_400.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install Davx5..."
-      adb install ./Apps/at.bitfire.davdroid_303110004.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install OpenTasks..."
-      adb install ./Apps/org.dmfs.tasks_82200.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install NewPipe..."
-      adb install ./Apps/org.schabi.newpipe_971.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install FlorisBoard..."
-      adb install ./Apps/dev.patrickgold.florisboard_43.apk
-      echo "Install complete!"
-      echo ""
-      echo "Have a Nice day with you FOSS Device!!"
-      echo ""
-    elif [[ "$adb" == 'N']]; then
-      echo "Check thats you Device had ADB activated!"
+      break
+    elif [[ "$adb_answer" == 'N' || "$adb_answer" == 'n' ]]; then
+      echo "Check that your Device has ADB activated!"
       exit 1
     fi
   done
-elif [ "$ant" == 'N']; then
+elif [[ "$ant" == 'N' || "$ant" == 'n' ]]; then
   echo "Oh, Sorry for you. The FOSS Apps are good."
   exit 1
-elif [[ "$ant" == 'E' ]]; then
-  exit
+elif [[ "$ant" == 'E' || "$ant" == 'e' ]]; then
+  exit 0
 else
   echo "Please Type again"
+  exit 1
 fi
