@@ -1,26 +1,44 @@
 # FOSS Apps for Android
 
-This is a little Script that's I create for install FOSS Apps for all Android Devices.
+This project provides scripts to download and install a curated list of FOSS Android apps.
 
-# For what i create this Script?
-I love Android and Open Source Software, but we use proprietary Apps that´s tracing us and sell us data,
-that´s why I use and love personaly Open Source Software. It´s Open Source and a better Alternative to the other non-free Apps.
-
-# It´s contain FOSS Apps:
+## Included apps
 - F-Droid
-- OSMAnd
-- Davx5
-- OpenTasks
-- NewPipe
+- Firefox
+- Thunderbird
 - FlorisBoard
+- Breezy Weather
+- Obtainium
+- OSMAnd
+- Aurora Store
 
-# Install this on Linux before use:
-- aria2c
-- android-sdk
+## Source strategy
+The scripts resolve the latest versions automatically:
+- **GitHub Releases**:
+  - Thunderbird
+  - FlorisBoard
+  - Obtainium (`app-release.apk`)
+  - Breezy Weather (`breezy-weather-$VERSION_standard.apk`)
+- **Vendor/Project download pages**:
+  - Firefox (`https://download.cdn.mozilla.net/pub/fenix/releases/`)
+  - OSMAnd (`https://download.osmand.net/releases/`)
+  - Aurora Store (`https://auroraoss.com/api/files`)
+- **F-Droid**:
+  - F-Droid installer APK
 
-# For Windows 
-It´s exist in the "files" Folder.
+OpenTasks was removed from the app list.
 
-# In the future
-I will add more FOSS Applications in the List.
-You can contribute this Project too. Make a Request on Github and write what for FOSS Applications is better alternative to Google Apps and can in the List.
+## Linux requirements
+- `aria2c`
+- `adb` (Android platform tools)
+- `curl`, `grep`, `sort`, `sed`
+
+## Windows requirements
+- Included in `files/`:
+  - `aria2c.exe`
+  - `adb.exe`
+- `PowerShell` (used to resolve latest APK links)
+
+## Notes
+- Linux script: `foss-android.sh`
+- Windows script: `foss-android.cmd` (can also be renamed to `.bat` if you prefer)

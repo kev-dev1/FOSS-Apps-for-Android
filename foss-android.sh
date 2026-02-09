@@ -1,107 +1,136 @@
 #!/bin/bash
 
-# The Applications downloading in the Apps Folder.
-destDir="Apps"
+set -euo pipefail
 
-echo ""
-echo "###############################################################"
-echo "                 Kev-Dev1 script Project"
-echo ""
-echo " You can help me with my Project"
-echo " When you have a Idea or you find a Bug, please create a"
-echo " Issues on Github to this Project."
-echo ""
-echo " Github: https://github.com/kev-dev1"
-echo ""
-echo "################################################################"
-echo ""
-echo "This is a little script for my Favorites FOSS Apps for Android."
-echo "This is a alternativ for GApps too."
-echo ""
-echo "You can uninstall the unnecessary if you want!"
-echo ""
-echo "Do you want to install these Applications"
-echo "F-Droid"
-echo "OSMAnd"
-echo "Davx5"
-echo "OpenTasks"
-echo "NewPipe"
-echo "FlorisBoard"
-echo ""
-echo "[Y] to install, [N] for not or [E] for exit."
-read ant
-echo ""
-if [ "$ant" == 'Y']; then
-  echo "Downloading F-Droid..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/F-Droid.apk
-  echo "Download complete!"
+destDir="Apps"
+mkdir -p "$destDir"
+
+declare -A APK_FILES
+APPS_TO_INSTALL=("F-Droid" "Firefox" "Thunderbird" "FlorisBoard" "Breezy Weather" "Obtainium" "OSMAnd" "Aurora Store")
+
+fetch_text() {
+  curl -fsSL "$1"
+}
+
+get_latest_from_index() {
+  local url="$1"
+  local regex="$2"
+  fetch_text "$url" \
+    | grep -oE "$regex" \
+    | sort -uV \
+    | tail -n 1
+}
+
+get_latest_github_asset_url() {
+  local repo="$1"
+  local asset_regex="$2"
+
+  fetch_text "https://api.github.com/repos/${repo}/releases/latest" \
+    | grep -oE '"browser_download_url"[[:space:]]*:[[:space:]]*"[^"]+"' \
+    | sed -E 's/^"browser_download_url"[[:space:]]*:[[:space:]]*"(.*)"$/\1/' \
+    | grep -E "$asset_regex" \
+    | head -n 1
+}
+
+download_and_store() {
+  local display_name="$1"
+  local url="$2"
+  echo "Downloading ${display_name}..."
+  aria2c -d "$destDir" --no-conf --allow-overwrite=true --file-allocation=none "$url"
+  local downloaded_file
+  downloaded_file="$(basename "${url%%\?*}")"
+  APK_FILES["$display_name"]="$downloaded_file"
+  echo "Download complete: $downloaded_file"
   echo ""
-  echo "Downloading OSMAnd..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/net.osmand.plus_400.apk
-  echo "Download complete!"
+}
+
+resolve_firefox_url() {
+  local base="https://download.cdn.mozilla.net/pub/fenix/releases/"
+  local release_dir
+  release_dir="$(get_latest_from_index "$base" 'v[0-9]+\.[0-9]+\.[0-9]+/')"
+  local release_url="${base}${release_dir}"
+
+  local apk_name
+  apk_name="$(get_latest_from_index "$release_url" 'fenix-[^" ]*arm64-v8a[^" ]*\.apk')"
+  if [[ -z "$apk_name" ]]; then
+    apk_name="$(get_latest_from_index "$release_url" 'fenix-[^" ]*\.apk')"
+  fi
+
+  echo "${release_url}${apk_name}"
+}
+
+resolve_osmand_url() {
+  local base="https://download.osmand.net/releases/"
+  local apk_name
+  apk_name="$(get_latest_from_index "$base" 'OsmAnd[^" ]*\.apk')"
+  echo "${base}${apk_name}"
+}
+
+resolve_aurora_store_url() {
+  fetch_text "https://auroraoss.com/api/files" \
+    | grep -oE 'https?://[^" ]*AuroraStore[^" ]*\.apk' \
+    | sort -uV \
+    | tail -n 1
+}
+
+print_header() {
   echo ""
-  echo "Downloading Davx5..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/at.bitfire.davdroid_303110004.apk
-  echo "Download complete!"
+  echo "###############################################################"
+  echo "                 Kev-Dev1 script Project"
   echo ""
-  echo "Downloading OpenTasks..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.dmfs.tasks_82200.apk
-  echo "Download complete!"
+  echo " Github: https://github.com/kev-dev1"
   echo ""
-  echo "Downloading NewPipe..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/org.schabi.newpipe_971.apk
-  echo "Download complete!"
+  echo "################################################################"
   echo ""
-  echo "Downloading FlorisBoard..."
-  aria2c -d "$destDir" --no-conf --allow-overwrite=true https://f-droid.org/repo/dev.patrickgold.florisboard_43.apk
-  echo "Download complete!"
+  echo "This script downloads and installs these Apps:"
+  for app in "${APPS_TO_INSTALL[@]}"; do
+    echo "$app"
+  done
   echo ""
-  while true;
-  do
-    echo "See you Android Device in the List"
+  echo "[Y] to install, [N] for not or [E] for exit."
+}
+
+print_header
+read -r ant
+echo ""
+
+if [[ "$ant" == 'Y' || "$ant" == 'y' ]]; then
+  download_and_store "F-Droid" "https://f-droid.org/F-Droid.apk"
+  download_and_store "Firefox" "$(resolve_firefox_url)"
+  download_and_store "Thunderbird" "$(get_latest_github_asset_url 'thunderbird/thunderbird-android' '.*\.apk$')"
+  download_and_store "FlorisBoard" "$(get_latest_github_asset_url 'florisboard/florisboard' '.*\.apk$')"
+  download_and_store "Breezy Weather" "$(get_latest_github_asset_url 'breezy-weather/breezy-weather' '.*/breezy-weather-.*_standard\.apk$')"
+  download_and_store "Obtainium" "$(get_latest_github_asset_url 'ImranR98/Obtainium' '.*/app-release\.apk$')"
+  download_and_store "OSMAnd" "$(resolve_osmand_url)"
+  download_and_store "Aurora Store" "$(resolve_aurora_store_url)"
+
+  while true; do
+    echo "See your Android Device in the List"
     adb devices
-    echo "When Yes but they see unauthorized."
-    echo "Authorized this on you Device!"
+    echo "Authorize this on your Device if needed."
     echo ""
-    read adb
-    if [[ "$adb" == 'Y' ]]; then
-      echo ""
-      echo "Install F-Droid..."
-      adb install ./Apps/F-Droid.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install OSMAnd..."
-      adb install ./Apps/net.osmand.plus_400.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install Davx5..."
-      adb install ./Apps/at.bitfire.davdroid_303110004.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install OpenTasks..."
-      adb install ./Apps/org.dmfs.tasks_82200.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install NewPipe..."
-      adb install ./Apps/org.schabi.newpipe_971.apk
-      echo "Install complete!"
-      echo ""
-      echo "Install FlorisBoard..."
-      adb install ./Apps/dev.patrickgold.florisboard_43.apk
-      echo "Install complete!"
-      echo ""
-      echo "Have a Nice day with you FOSS Device!!"
-      echo ""
-    elif [[ "$adb" == 'N']]; then
-      echo "Check thats you Device had ADB activated!"
+    read -r adb_answer
+
+    if [[ "$adb_answer" == 'Y' || "$adb_answer" == 'y' ]]; then
+      for app in "${APPS_TO_INSTALL[@]}"; do
+        echo "Install $app..."
+        adb install "./$destDir/${APK_FILES[$app]}"
+        echo "Install complete!"
+        echo ""
+      done
+      echo "Have a nice day with your FOSS Device!!"
+      break
+    elif [[ "$adb_answer" == 'N' || "$adb_answer" == 'n' ]]; then
+      echo "Check that your Device has ADB activated!"
       exit 1
     fi
   done
-elif [ "$ant" == 'N']; then
+elif [[ "$ant" == 'N' || "$ant" == 'n' ]]; then
   echo "Oh, Sorry for you. The FOSS Apps are good."
   exit 1
-elif [[ "$ant" == 'E' ]]; then
-  exit
+elif [[ "$ant" == 'E' || "$ant" == 'e' ]]; then
+  exit 0
 else
   echo "Please Type again"
+  exit 1
 fi
